@@ -4,9 +4,9 @@ import requests
 endpoint = "https://httpbin.org/status/200/"
 endpoint = "http://localhost:8000/api/"
 
-get_response = requests.get(endpoint,params={'abc':123}#query params like /api/?abc=123
+get_response = requests.post(endpoint,params={'abc':123}#query params like /api/?abc=123
     ,json={
-    'query':'Hello World'
+    'content':'Hello World'
 }) # HTTP GET Request
 #print(get_response.text)
 print(get_response.json())

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from products.serializer import ProductSerializer
 
-@api_view(['GET','POST'])
+@api_view(['POST'])
 def api_home(request):
     # data = {}
     # print(request.GET) #prints out the url qury params
@@ -43,9 +43,21 @@ def api_home(request):
     """
     DRF API VIEW
     """
-    instance = Products.objects.all().order_by('?').first()
-    data = {}
-    if instance:
-        #data = model_to_dict(model_data,fields=['id','title','price'])
-        data =ProductSerializer(instance).data
-    return Response(data)
+    data = request.data
+    # instance = Products.objects.all().order_by('?').first()
+    # data = {}
+    # if instance:
+    #     #data = model_to_dict(model_data,fields=['id','title','price'])
+    #     data =ProductSerializer(instance).data
+
+    #now we can receive data and look whether its is clean or not
+    serializer = ProductSerializer(data=data)
+    if serializer.is_valid():
+        #instance = serializer.save()
+        #print(instance) 
+        data = serializer.data
+        print(data)
+    
+        return Response(data)
+    else:
+        return Response({'message':'Invalid data'},status=400)
