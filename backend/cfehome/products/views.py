@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics,mixins
 from .models import Products
 from .serializer import ProductSerializer
 from rest_framework.response import Response
@@ -39,6 +39,8 @@ class ProductDeleteAPIView(generics.DestroyAPIView):
         super().perform_destroy()
 
 
+
+
 #creting all API view in a single view function
 @api_view(["GET","POST"])
 def product_alt_view(request,pk = None,*args,**kwargs):
@@ -69,4 +71,23 @@ def product_alt_view(request,pk = None,*args,**kwargs):
         else:
             return Response({'message':'Error Occured'},status=400)
 
+#alternative to product alt view using rest frmawork class 
+class ProductMixinView(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView):
 
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'     
+    
+    def get(self,request,*args,**kwargs):
+        print(args,kwargs)
+        pk = kwargs.get('pk')
+        if pk is not None:
+            return self.retrieve(request,*args,**kwargs)
+        return self.list(request,*args,**kwargs)
+
+    def post(self,request,*args,**kwargs):
+        return self.create(request,*args,**kwargs)
