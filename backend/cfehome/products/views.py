@@ -1,15 +1,19 @@
-from rest_framework import generics,mixins
+from rest_framework import generics,mixins,permissions,authentication
 from .models import Products
 from .serializer import ProductSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-
+from .permissions import IsStaffEditorPermission
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
+
+    #authentication class and permission classes
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAdminUser,IsStaffEditorPermission] #Ordering matters here
 
     
 
