@@ -6,13 +6,17 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from .permissions import IsStaffEditorPermission
+from api.authentication import TokenAuthentication
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
 
     #authentication class and permission classes
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [
+        authentication.SessionAuthentication,
+        TokenAuthentication]
+    
     permission_classes = [permissions.IsAdminUser,IsStaffEditorPermission] #Ordering matters here
 
     
